@@ -31,6 +31,7 @@ enable :sessions
 
 helpers do
   def current_user
+    puts "user_id: #{session[:user_id]}"
     @current_user ||= User.get(session[:user_id]) if session[:user_id]
   end
 end
@@ -52,6 +53,7 @@ end
 
 get '/auth/:name/callback' do
   auth = request.env["omniauth.auth"]
+  puts "auth = #{auth.inspect}"
   
   user = User.find_by_uid(auth["uid"]) || User.new(:uid => auth["uid"])
   user.nickname = auth["nickname"]
