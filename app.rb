@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'bundle/setup'
+require 'bundler/setup'
 
 CouchRest::Model::Base.connection({:protocol => "https", :host => ENV["COUCH_HOST"], :port => ENV["COUCH_PORT"], 
   :username => ENV["COUCH_USER"], :password => ENV['COUCH_PASSWORD'], :prefix => "omniauth-sample"})
