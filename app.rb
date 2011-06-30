@@ -1,23 +1,24 @@
-%w(rubygems oa-oauth dm-core dm-sqlite-adapter dm-migrations sinatra).each { |dependency| require dependency }
+require 'rubygems'
+require 'bundle/setup'
 
-DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/database.db")
+CouchRest::Model::Base.connection({:protocol => "https", :host => ENV["COUCH_HOST"], :port => ENV["COUCH_PORT"], 
+  :username => ENV["COUCH_USER"], :password => ENV['COUCH_PASSWORD'], :prefix => "omniauth-sample"})
 
-class User
-  include DataMapper::Resource
-  property :id,         Serial
-  property :uid,        String
-  property :name,       String
-  property :nickname,   String
-  property :created_at, DateTime
+class User < CouchRest::Model::Base
+  property :uid
+  property :name
+  property :nickname
+  timestamps!
+  
+  design do 
+    view :by_uid
+  end
 end
-
-DataMapper.finalize
-DataMapper.auto_upgrade!
 
 # You'll need to customize the following line. Replace the CONSUMER_KEY 
 #   and CONSUMER_SECRET with the values you got from Twitter 
 #   (https://dev.twitter.com/apps/new).
-use OmniAuth::Strategies::Twitter, 'CONSUMER_KEY', 'CONSUMER_SECRET'
+use OmniAuth::Strategies::Twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 
 enable :sessions
 
