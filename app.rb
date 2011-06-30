@@ -15,6 +15,7 @@ class User < CouchRest::Model::Base
   property :uid
   property :name
   property :nickname
+  property :profile_image
   timestamps!
   
   design do 
@@ -56,8 +57,9 @@ get '/auth/:name/callback' do
   puts "auth = #{auth.inspect}"
   
   user = User.find_by_uid(auth["uid"]) || User.new(:uid => auth["uid"])
-  user.nickname = auth["nickname"]
-  user.name = auth["name"]
+  user.nickname = auth["user_info"]["nickname"]
+  user.profile_image = auth["user_info"]["image"]
+  user.name = auth["screen_name"]
   user.save!
 
   session[:user_id] = user.id
