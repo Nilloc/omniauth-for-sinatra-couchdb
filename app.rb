@@ -50,11 +50,12 @@ end
 
 get '/auth/:name/callback' do
   auth = request.env["omniauth.auth"]
-  user = User.first_or_create({ :uid => auth["uid"]}, { 
-    :uid => auth["uid"], 
-    :nickname => auth["user_info"]["nickname"], 
-    :name => auth["user_info"]["name"], 
-    :created_at => Time.now })
+  
+  user = User.find_by_uid(auth["uid"]) || User.new(:uid => auth["uid"])
+  user.nickname = auth["nickname"]
+  user.name = auth["name"]
+  user.save!
+
   session[:user_id] = user.id
   redirect '/'
 end
