@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'sinatra'
 require 'couchrest'
 require 'couchrest_model'
 require 'oa-oauth'
