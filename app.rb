@@ -6,10 +6,12 @@ require 'couchrest'
 require 'couchrest_model'
 require 'oa-oauth'
 
-CouchRest::Model::Base.connection({:protocol => "https", :host => ENV["COUCH_HOST"], :port => ENV["COUCH_PORT"], 
-  :username => ENV["COUCH_USER"], :password => ENV['COUCH_PASSWORD'], :prefix => "omniauth-sample"})
+$COUCH = CouchRest.new ENV["CLOUDANT_URL"]
+$COUCH.default_database = "omniauth-for-sinatra"
 
 class User < CouchRest::Model::Base
+  use_database $COUCH.default_database
+
   property :uid
   property :name
   property :nickname
