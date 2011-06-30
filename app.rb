@@ -6,6 +6,8 @@ require 'couchrest'
 require 'couchrest_model'
 require 'oa-oauth'
 
+# Configure the CouchDB using the cloudant config
+# For more info, check http://addons.heroku.com/cloudant
 $COUCH = CouchRest.new ENV["CLOUDANT_URL"]
 $COUCH.default_database = "omniauth-for-sinatra"
 
@@ -32,7 +34,6 @@ enable :sessions
 
 helpers do
   def current_user
-    puts "user_id: #{session[:user_id]}"
     @current_user ||= User.get(session[:user_id]) if session[:user_id]
   end
 end
@@ -54,7 +55,6 @@ end
 
 get '/auth/:name/callback' do
   auth = request.env["omniauth.auth"]
-  puts "auth = #{auth.inspect}"
   
   user = User.find_by_uid(auth["uid"]) || User.new(:uid => auth["uid"])
   user.nickname = auth["user_info"]["nickname"]
